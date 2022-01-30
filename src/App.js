@@ -9,7 +9,8 @@ class App extends Component {
 
     this.state = {
       heliumAPI: 'https://api.helium.io/v1',
-      api: 'http://localhost:8000',
+      // api: 'http://localhost:8000',
+      api: 'https://hotspotstatus.herokuapp.com',
 
       search: '',
 
