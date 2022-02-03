@@ -13,6 +13,7 @@ class App extends Component {
       api: 'https://hotspotstatus.herokuapp.com',
 
       search: '',
+      loading: false,
 
       hotspot: {
         name: '',
@@ -67,10 +68,15 @@ class App extends Component {
 
   //
   pingHotspot() {
+    this.setState({
+      loading: true
+    });
+
     const { ip, port } = this.state.hotspot;
 
     axios.get(this.state.api + '/ping?ip=' + ip + '&port=' + port).then(response => {
       this.setState({
+        loading: false,
         hotspot: {
           ...this.state.hotspot,
           status: response.data.status
@@ -78,6 +84,7 @@ class App extends Component {
       });
     }).catch(error => {
       this.setState({
+        loading: false,
         hotspot: {
           status: false
         }
@@ -97,6 +104,13 @@ class App extends Component {
           this.state.hotspot.name.length > 0 &&
           <>
             <button onClick={this.pingHotspot}>Ping Hotspot</button>
+          </>
+        }
+
+        {
+          this.state.loading &&
+          <>
+            <p>Loading....</p>
           </>
         }
 
