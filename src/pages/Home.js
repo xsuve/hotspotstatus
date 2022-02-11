@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 // Components
+import Navbar from './../components/Navbar';
 import Header from './../components/Header';
 
 import axios from 'axios';
@@ -123,20 +124,21 @@ class Home extends Component {
   render() {
     return (
       <>
+        <Navbar />
         <Header />
 
         <div className="sm:grid sm:grid-cols-5 px-4">
           <div></div>
           <div className="col-span-3 relative">
             <div className="bg-dark-700 rounded-xl sm:pl-7 sm:pr-4 sm:py-4 p-4 flex sm:flex-row flex-col items-center w-full absolute sm:-top-11 -top-20">
-              <input className="w-full sm:h-16 h-14 sm:p-0 pb-4 mb-0 bg-transparent text-white font-poppins text-base sm:text-left text-center outline-0 ring-0 border-transparent focus:outline-0 focus:ring-0 focus:border-transparent" type="text" value={this.state.search} onChange={this.handleChange} placeholder="Enter hotspot name" />
+              <input className="w-full sm:h-16 h-14 sm:p-0 pb-4 mb-0 bg-transparent text-white font-poppins sm:text-base text-sm sm:text-left text-center outline-0 ring-0 border-transparent focus:outline-0 focus:ring-0 focus:border-transparent" type="text" value={this.state.search} onChange={this.handleChange} placeholder="Enter hotspot name" />
               <button className="sm:w-auto w-full sm:h-16 h-14 rounded-lg bg-primary text-dark-800 font-medium font-poppins sm:text-base text-sm px-8 disabled:opacity-60" onClick={this.searchHotspot} disabled={this.state.loadingSearch}>{this.state.loadingSearch ? 'Searching...' : 'Search'}</button>
             </div>
           </div>
           <div></div>
         </div>
 
-        <div className="sm:px-36 px-4 pt-32 sm:pb-24 pb-24 sm:min-h-48 bg-dark-800">
+        <div className="sm:px-36 px-4 pt-28 pb-20 bg-dark-800">
           {
             this.state.search.length == 0 && this.state.hotspot.name.length > 0 ?
             <>
@@ -156,8 +158,15 @@ class Home extends Component {
             this.state.loadingSearch ?
             <p className="font-poppins text-white text-base">Searching hotspot...</p>
             :
-            this.state.notFound &&
+            this.state.notFound ?
             <p className="font-poppins text-white text-base">Hotspot not found.</p>
+            :
+            <>
+              <svg className="h-8 w-8 text-white mx-auto animate-bounce"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+              </svg>
+              <p className="font-poppins text-white text-xl text-center mt-8">Type in the name of the Helium Hotspot</p>
+            </>
           }
         </div>
       </>
