@@ -26,7 +26,8 @@ class Home extends Component {
         listen_addrs: '',
         ip: '',
         port: '',
-        status: undefined
+        status: undefined,
+        validIP: false
       }
     };
 
@@ -52,6 +53,15 @@ class Home extends Component {
   }
 
   //
+  validIP(ip) {
+    if(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  //
   handleChange(event) {
     this.setState({
       search: event.target.value
@@ -73,7 +83,8 @@ class Home extends Component {
           name: response.data.data[0].name,
           listen_addrs: response.data.data[0].status.listen_addrs[0],
           ip: ip,
-          port: port
+          port: port,
+          validIP: this.validIP(ip)
         }
       });
     }).catch(error => {
@@ -141,32 +152,35 @@ class Home extends Component {
         <div className="sm:px-36 px-4 pt-28 pb-20 bg-dark-800">
           {
             this.state.search.length == 0 && this.state.hotspot.name.length > 0 ?
-            <>
-              <h1 className="font-poppins text-white text-3xl font-bold mb-6">{this.formatHotspotName(this.state.hotspot.name)}</h1>
-              <p className="font-poppins text-white text-base mb-8 break-words">{this.state.hotspot.listen_addrs}</p>
-              <div className="w-full flex flex-row items-center justify-start">
-                <button className="rounded-lg bg-green text-dark-800 font-medium font-poppins sm:text-base text-sm px-6 py-4 mr-6 disabled:opacity-60" onClick={this.pingHotspot} disabled={this.state.loadingPing}>{this.state.loadingPing ? 'Loading...' : 'Ping Hotspot'}</button>
-                { this.state.hotspot.status != undefined ?
-                  <p className={`font-poppins text-sm ${this.state.hotspot.status ? 'text-green' : 'text-primary'}`}>Hotspot is {this.state.hotspot.status ? 'Online' : 'Offline'}!</p>
-                  :
-                  this.state.loadingPing &&
-                  <p className="font-poppins text-white text-sm">Loading...</p>
-                }
-              </div>
-            </>
+              <>
+                <h1 className="font-poppins text-white text-3xl font-bold mb-6">{this.formatHotspotName(this.state.hotspot.name)}</h1>
+                <p className="font-poppins text-white text-base mb-8 break-words">{this.state.hotspot.listen_addrs}</p>
+                <div className="w-full flex flex-row items-center justify-start">
+                  <button className="rounded-lg bg-green text-dark-800 font-medium font-poppins sm:text-base text-sm px-6 py-4 mr-6 disabled:opacity-60" onClick={this.pingHotspot} disabled={this.state.hotspot.validIP ? (this.state.loadingPing ? true : false) : true}>{this.state.loadingPing ? 'Loading...' : 'Ping Hotspot'}</button>
+                  {
+                    this.state.hotspot.validIP ?
+                      this.state.hotspot.status != undefined ?
+                        <p className={`font-poppins text-sm ${this.state.hotspot.status ? 'text-green' : 'text-primary'}`}>Hotspot is {this.state.hotspot.status ? 'Online' : 'Offline'}!</p>
+                      :
+                        this.state.loadingPing && <p className="font-poppins text-white text-sm">Loading...</p>
+                    :
+                      <p className='font-poppins text-sm text-primary'>Not a valid IP address.</p>
+                  }
+                </div>
+              </>
             :
-            this.state.loadingSearch ?
-            <p className="font-poppins text-white text-base">Searching hotspot...</p>
-            :
-            this.state.notFound ?
-            <p className="font-poppins text-white text-base">Hotspot not found.</p>
-            :
-            <>
-              <svg className="h-8 w-8 text-white mx-auto animate-bounce"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-              </svg>
-              <p className="font-poppins text-white text-xl text-center mt-8">Type in the name of the Helium Hotspot</p>
-            </>
+              this.state.notFound ?
+                <p className="font-poppins text-white text-base">Hotspot not found.</p>
+              :
+                this.state.loadingSearch ?
+                  <p className="font-poppins text-white text-base">Searching hotspot...</p>
+                :
+                  <>
+                    <svg className="h-8 w-8 text-white mx-auto animate-bounce"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                    </svg>
+                    <p className="font-poppins text-white text-xl text-center mt-8">Type in the name of the Helium Hotspot</p>
+                  </>
           }
         </div>
       </>
