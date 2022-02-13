@@ -38,6 +38,9 @@ input:focus {
 .bg-yellow {
   background-color: var(--yellow);
 }
+.border-dark-800 {
+  border-color: var(--dark-800);
+}
 
 .text-primary {
   color: var(--primary);

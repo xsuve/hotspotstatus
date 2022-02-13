@@ -15,7 +15,7 @@ class Navbar extends Component {
   // Render
   render() {
     return (
-      <div className="h-20 bg-dark-800 sm:px-48 px-4 flex items-center fixed w-full">
+      <div className="h-20 bg-dark-800 sm:px-48 px-4 flex items-center fixed w-full z-50">
         <div className="grid grid-cols-3">
           <div className="sm:col-span-1 col-span-3">
             <div className="font-poppins text-white font-bold text-xl flex items-center">
