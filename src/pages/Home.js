@@ -40,7 +40,7 @@ class Home extends Component {
     this.searchHotspot = this.searchHotspot.bind(this);
     this.pingHotspot = this.pingHotspot.bind(this);
     this.formatHotspotName = this.formatHotspotName.bind(this);
-    this.setSearch = this.setSearch.bind(this);
+    this.setHotspot = this.setHotspot.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +81,7 @@ class Home extends Component {
           if(i < 3) {
             hotspots.push({
               name: this.formatHotspotName(hotspot.name),
+              address: hotspot.address,
               location: hotspot.geocode.short_state + ', ' + hotspot.geocode.long_country,
               status: hotspot.status.online == 'online'
             });
@@ -99,39 +100,37 @@ class Home extends Component {
   }
 
   //
-  setSearch(name) {
+  setHotspot(address) {
     this.setState({
       search: '',
       searchResults: []
     });
 
-    this.searchHotspot(name);
+    this.searchHotspot(address);
   }
 
   //
-  searchHotspot(name) {
+  searchHotspot(address) {
     this.setState({
       loadingSearch: true
     });
 
-    axios.get(this.state.heliumAPI + '/hotspots/name?search=' + name).then(response => {
-      const { ip, port } = this.parseListenAddrs(response.data.data[0].status.listen_addrs[0]);
-
-      console.log(response.data.data[0]);
+    axios.get(this.state.heliumAPI + '/hotspots/' + address).then(response => {
+      const { ip, port } = this.parseListenAddrs(response.data.data.status.listen_addrs[0]);
 
       this.setState({
         loadingSearch: false,
         search: '',
         hotspot: {
-          name: response.data.data[0].name,
-          listen_addrs: response.data.data[0].status.listen_addrs[0],
+          name: response.data.data.name,
+          listen_addrs: response.data.data.status.listen_addrs[0],
           ip: ip,
           port: port,
           validIP: this.validIP(ip),
-          status: response.data.data[0].status.online == 'online',
-          transmitScale: response.data.data[0].reward_scale.toFixed(2),
-          blockchainBlockHeight: response.data.data[0].block,
-          hotspotBlockHeight: response.data.data[0].last_change_block
+          status: response.data.data.status.online == 'online',
+          transmitScale: response.data.data.reward_scale.toFixed(2),
+          blockchainBlockHeight: response.data.data.block,
+          hotspotBlockHeight: response.data.data.last_change_block
         }
       });
     }).catch(error => {
@@ -193,7 +192,7 @@ class Home extends Component {
                 {
                   this.state.searchResults.length > 0 ?
                     this.state.searchResults.map((hotspot, index) => (
-                      <div key={index} className="bg-dark-700 p-6 border-t border-dark-800 cursor-pointer flex items-center justify-between" onClick={() => this.setSearch(hotspot.name)}>
+                      <div key={index} className="bg-dark-700 p-6 border-t border-dark-800 cursor-pointer flex items-center justify-between" onClick={() => this.setHotspot(hotspot.address)}>
                         <div>
                           <p className="font-poppins font-medium text-white text-sm mb-2">{hotspot.name}</p>
                           <p className="font-poppins text-slate-400 text-xs">{hotspot.location}</p>
