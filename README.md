@@ -7,6 +7,8 @@ Hotspot Status is a React app that uses the Helium API to view your Helium hotsp
 ### Development
 * React
 * TailwindCSS
+* HTML5
+* CSS3
 
 ---
 
